@@ -4,6 +4,8 @@ services:
 
   mysql:
     image: mysql
+    networks:
+      - appnet
     volumes:
       - ./services/mysql:/docker-entrypoint-initdb.d:ro
 
@@ -12,14 +14,22 @@ services:
       context: ./
       dockerfile: ./services/app.Dockerfile
     depends_on:
-     - mysql
+      - mysql
+    networks:
+      - appnet
 
   web:
     image: nginx
     depends_on:
       - app
+    networks:
+      - appnet
     ports:
       - 8888:80
     volumes:
       - ./services/nginx:/etc/nginx/conf.d:ro
       - ./frontend/public:/var/public:ro
+
+
+networks:
+  appnet:

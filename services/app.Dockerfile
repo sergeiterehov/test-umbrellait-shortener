@@ -4,6 +4,6 @@ COPY ./app /var/app
 
 WORKDIR /var/app
 
-RUN npm install
+RUN npm install --only=production
 
 ENTRYPOINT [ "npm", "start" ]
