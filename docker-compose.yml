@@ -1,0 +1,25 @@
+version: "2"
+
+services:
+
+  mysql:
+    image: mysql
+    volumes:
+      - ./services/mysql:/docker-entrypoint-initdb.d:ro
+
+  app:
+    build:
+      context: ./
+      dockerfile: ./services/app.Dockerfile
+    depends_on:
+     - mysql
+
+  web:
+    image: nginx
+    depends_on:
+      - app
+    ports:
+      - 8888:80
+    volumes:
+      - ./services/nginx:/etc/nginx/conf.d:ro
+      - ./frontend/public:/var/public:ro

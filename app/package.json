@@ -1,0 +1,31 @@
+{
+  "name": "test-umbrellait-shortener",
+  "version": "1.0.0",
+  "description": "Test task from UbrellaIT",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dist-clear": "rm -rf ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergeiterehov/test-umbrellait-shortener.git"
+  },
+  "keywords": [
+    "test",
+    "shortener",
+    "umbrellait"
+  ],
+  "author": "Sergei Terehov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sergeiterehov/test-umbrellait-shortener/issues"
+  },
+  "homepage": "https://github.com/sergeiterehov/test-umbrellait-shortener#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^2.9.2"
+  }
+}
