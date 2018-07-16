@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
     "build": "tsc",
-    "dist-clear": "rm -rf ./dist"
+    "dist-clear": "rm -rf ./dist",
+    "bit-shuffle": "node dist/codegen/BitShuffle.js 31"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   "homepage": "https://github.com/sergeiterehov/test-umbrellait-shortener#readme",
   "dependencies": {},
   "devDependencies": {
+    "@types/node": "^10.5.2",
     "typescript": "^2.9.2"
   }
 }
