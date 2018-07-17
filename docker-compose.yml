@@ -6,8 +6,16 @@ services:
     image: mysql
     networks:
       - appnet
+    ports:
+      - 33060:3306
     volumes:
       - ./services/mysql:/docker-entrypoint-initdb.d:ro
+      - ./services/mysql/local:/var/lib/mysql:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: linkdb
+      MYSQL_USER: app
+      MYSQL_PASSWORD: apppassword
 
   app:
     build:
@@ -29,7 +37,6 @@ services:
     volumes:
       - ./services/nginx:/etc/nginx/conf.d:ro
       - ./frontend/public:/var/public:ro
-
 
 networks:
   appnet:
