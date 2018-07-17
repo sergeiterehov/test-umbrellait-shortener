@@ -1,0 +1,25 @@
+{
+    "name": "default",
+    "type": "mysql",
+    "host": "localhost",
+    "port": 33060,
+    "username": "app",
+    "password": "apppassword",
+    "database": "linkdb",
+    "synchronize": false,
+    "logging": false,
+    "entities": [
+        "dist/entity/*.js"
+    ],
+    "subscribers": [
+        "dist/subscriber/*.js"
+    ],
+    "migrations": [
+        "dist/migration/*.js"
+    ],
+    "cli": {
+        "entitiesDir": "dist/entity",
+        "migrationsDir": "dist/migration",
+        "subscribersDir": "dist/subscriber"
+    }
+}

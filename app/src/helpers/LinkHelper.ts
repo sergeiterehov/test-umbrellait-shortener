@@ -1,3 +1,5 @@
+import { getRepository, Repository } from "typeorm";
+import { Link } from "../entity/Link";
 import { bitshuffle } from "./bitshuffle";
 
 /**
@@ -10,14 +12,41 @@ const shuffleLimit: number = (2 ** 53);
  */
 export class LinkHelper {
     /**
+     * Create and store new short link
+     * @param sourceLink Source url link
+     * @param name Personal name for short link
+     */
+    public static async createLink(sourceLink: string, name: string|null = null): Promise<Link> {
+        const id = name ? name : this.generateShuffleString(await this.generateNextId());
+
+        const link = new Link();
+
+        link.id = id;
+        link.createdAt = new Date();
+        link.sourceLink = sourceLink;
+        link.amountOpen = 0;
+
+        await getRepository(Link).save(link);
+
+        return link;
+    }
+
+    /**
      * Generate the string by bit shuffle operation on the received number
      * @param currentNumber Current state of auto increment
      */
-    public static generateShuffleString(currentNumber: number): string {
+    private static generateShuffleString(currentNumber: number): string {
         if (shuffleLimit < currentNumber) {
             throw new Error("Bit shuffle limit reached (2 ** 53)");
         }
 
         return bitshuffle(currentNumber).toString(36);
+    }
+
+    /**
+     * Generate the next id for link record. Auto increment counter.
+     */
+    private static async generateNextId(): Promise<number> {
+        return 1234;
     }
 }

@@ -8,6 +8,8 @@
     "start": "node dist/index.js",
     "build": "tsc",
     "dist-clear": "rm -rf ./dist",
+    "migrate-up": "typeorm migration:run",
+    "migrate-down": "typeorm migration:revert",
     "codegen-bit-shuffle": "node dist/codegen/BitShuffle.js 53 > src/helpers/bitshuffle.ts"
   },
   "repository": {
@@ -25,7 +27,11 @@
     "url": "https://github.com/sergeiterehov/test-umbrellait-shortener/issues"
   },
   "homepage": "https://github.com/sergeiterehov/test-umbrellait-shortener#readme",
-  "dependencies": {},
+  "dependencies": {
+    "mysql2": "^1.5.3",
+    "reflect-metadata": "^0.1.12",
+    "typeorm": "^0.2.7"
+  },
   "devDependencies": {
     "@types/node": "^10.5.2",
     "typescript": "^2.9.2"
