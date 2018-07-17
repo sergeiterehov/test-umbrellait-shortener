@@ -28,6 +28,8 @@
   },
   "homepage": "https://github.com/sergeiterehov/test-umbrellait-shortener#readme",
   "dependencies": {
+    "@types/ioredis": "^3.2.13",
+    "ioredis": "^3.2.2",
     "mysql2": "^1.5.3",
     "reflect-metadata": "^0.1.12",
     "typeorm": "^0.2.7"
