@@ -5,6 +5,9 @@ import { bitshuffle } from "./bitshuffle";
  */
 const shuffleLimit: number = (2 ** 53);
 
+/**
+ * Helper for shortlink manipulations
+ */
 export class LinkHelper {
     /**
      * Generate the string by bit shuffle operation on the received number
