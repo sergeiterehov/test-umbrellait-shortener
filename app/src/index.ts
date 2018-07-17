@@ -6,7 +6,7 @@ import { LinkHelper } from "./helpers/LinkHelper";
 createConnection().then(async (connection) => {
     const repo = getRepository(Link);
 
-    const link = await LinkHelper.createLink("http://localhost/");
+    const link = await LinkHelper.createLink("http://localhost/", "test");
 
     const list = await repo.find();
 

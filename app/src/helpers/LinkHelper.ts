@@ -1,4 +1,4 @@
-import { getRepository, Repository } from "typeorm";
+import { getRepository } from "typeorm";
 import { Link } from "../entity/Link";
 import { bitshuffle } from "./bitshuffle";
 
@@ -26,7 +26,8 @@ export class LinkHelper {
         link.sourceLink = sourceLink;
         link.amountOpen = 0;
 
-        await getRepository(Link).save(link);
+        // Exception when parallel access or record already exists
+        await getRepository(Link).insert(link);
 
         return link;
     }
@@ -48,5 +49,13 @@ export class LinkHelper {
      */
     private static async generateNextId(): Promise<number> {
         return 1234;
+    }
+
+    /**
+     * Find link by id
+     * @param id Link id
+     */
+    private static async find(id: string): Promise<Link|undefined> {
+        return await getRepository(Link).findOne(id);
     }
 }
