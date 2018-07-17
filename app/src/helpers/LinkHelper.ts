@@ -1,16 +1,19 @@
 import { getRepository } from "typeorm";
 import { Link } from "../entity/Link";
-import { bitshuffle } from "./bitshuffle";
-
-/**
- * Integer limit when calculations is precis.
- */
-const shuffleLimit: number = (2 ** 53);
+import { shuffle } from "./Shuffle";
 
 /**
  * Helper for shortlink manipulations
  */
 export class LinkHelper {
+    /**
+     * Find link by id
+     * @param id Link id
+     */
+    public static async find(id: string): Promise<Link|undefined> {
+        return await getRepository(Link).findOne(id);
+    }
+
     /**
      * Create and store new short link
      * @param sourceLink Source url link
@@ -37,11 +40,7 @@ export class LinkHelper {
      * @param currentNumber Current state of auto increment
      */
     private static generateShuffleString(currentNumber: number): string {
-        if (shuffleLimit < currentNumber) {
-            throw new Error("Bit shuffle limit reached (2 ** 53)");
-        }
-
-        return bitshuffle(currentNumber).toString(36);
+        return shuffle(currentNumber).toString(36);
     }
 
     /**
@@ -49,13 +48,5 @@ export class LinkHelper {
      */
     private static async generateNextId(): Promise<number> {
         return 1234;
-    }
-
-    /**
-     * Find link by id
-     * @param id Link id
-     */
-    private static async find(id: string): Promise<Link|undefined> {
-        return await getRepository(Link).findOne(id);
     }
 }
