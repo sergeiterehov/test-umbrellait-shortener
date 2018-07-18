@@ -1,3 +1,6 @@
 import * as Redis from "ioredis";
+import { config } from "../helpers/config";
 
-export const redis = new Redis(63790);
+const params = config.redis;
+
+export const redis = new Redis(params.port, params.host);

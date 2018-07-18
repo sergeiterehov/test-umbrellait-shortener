@@ -4,10 +4,11 @@ import * as expressValidator from "express-validator";
 import { json, urlencoded } from "body-parser";
 import { LinkController } from "./controllers/LinkController";
 import apiVersion1 from "./routers/api-v1";
+import { config } from "./helpers/config";
 
 export const app = express();
 
-app.set("port", process.env.PORT || 3000);
+app.set("port", config.app.port);
 app.set("views", path.join(__dirname, "../views").normalize());
 app.set("view engine", "pug");
 

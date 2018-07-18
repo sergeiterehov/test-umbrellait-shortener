@@ -1,8 +1,8 @@
 {
     "name": "default",
     "type": "mysql",
-    "host": "localhost",
-    "port": 33060,
+    "host": "mysql",
+    "port": 3306,
     "username": "app",
     "password": "apppassword",
     "database": "linkdb",
