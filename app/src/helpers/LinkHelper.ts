@@ -41,16 +41,31 @@ export class LinkHelper {
      * @param link Opened link
      */
     public static async registerOpen(link: Link) {
-        await redis.hincrby("opcnt", link.id, 1);
+        await redis.hincrby("opncnt", link.id, 1);
     }
 
+    /**
+     * Storing all registered opens
+     */
     public static async flushOpens() {
-        const records = (await redis.hgetall("opcnt")) as {[key: string]: string};
-        const items = Object.keys(records)
-            .map((id: string) => [id, parseInt(records[id], 10)])
-            .map(async (pair: [string, number]) => this.updateAmountOpen(pair[0], pair[1]));
+        const items = await this.getFlushOpens();
+        const updating = items.map(async (pair) => this.updateAmountOpen(pair[0], pair[1]));
 
-        await Promise.all(items);
+        await Promise.all(updating);
+    }
+
+    /**
+     * Return counters and delete all
+     */
+    private static async getFlushOpens(): Promise<[[string, number]]> {
+        const records = (await redis.hgetall("opncnt")) as {[key: string]: string};
+        const delCompleting = redis.del("opncnt");
+        const items = Object.keys(records)
+            .map((id: string) => [id, parseInt(records[id], 10)]) as [[string, number]];
+
+        await delCompleting;
+
+        return items;
     }
 
     /**
@@ -77,15 +92,12 @@ export class LinkHelper {
         await getConnection().createQueryBuilder()
             .update("link")
             .set({
-                amountOpen: Raw(`amountOpen + ${increment}`),
+                amountOpen: () => `amountOpen + ${increment}`,
             })
             .where({
                 id: (id),
             })
             .execute();
-            // TODO: fix it
-
-        console.log(id, increment);
 
         return id;
     }
