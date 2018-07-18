@@ -35,6 +35,8 @@ services:
       - redis
     networks:
       - appnet
+    environment:
+      PORT: 80
 
   web:
     image: nginx
