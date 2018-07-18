@@ -5,11 +5,9 @@ npm install --only=production
 ```
 
 ```bash
-npm start
+npm run build
 ```
 
-## Development
-
 ```bash
-npm run build
+npm start
 ```
