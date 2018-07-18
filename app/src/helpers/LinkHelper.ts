@@ -1,4 +1,4 @@
-import { getRepository, getConnection, Raw } from "typeorm";
+import { getRepository, getConnection, Raw, LessThan } from "typeorm";
 import { redis } from "./../db/Redis";
 import { Link } from "./../entity/Link";
 import { shuffle } from "./Shuffle";
@@ -52,6 +52,20 @@ export class LinkHelper {
         const updating = items.map(async (pair) => this.updateAmountOpen(pair[0], pair[1]));
 
         await Promise.all(updating);
+    }
+
+    /**
+     * Removing all links by TTL
+     * @param ttlDays Interval in days to deleting old links
+     */
+    public static async cleanByTTL(ttlDays: number) {
+        const timeLimit = new Date();
+
+        timeLimit.setDate(timeLimit.getDate() - ttlDays);
+
+        await getRepository(Link).delete({
+            createdAt: LessThan(timeLimit),
+        });
     }
 
     /**

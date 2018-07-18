@@ -13,5 +13,7 @@ createConnection().then(async (connection) => {
 
     console.log(list);
 
-    LinkHelper.flushOpens();
+    await LinkHelper.flushOpens();
+
+    await LinkHelper.cleanByTTL(15);
 });
