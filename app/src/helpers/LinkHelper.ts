@@ -1,6 +1,7 @@
 import { getRepository, getConnection, Raw, LessThan } from "typeorm";
-import { redis } from "./../db/Redis";
-import { Link } from "./../entity/Link";
+import axios from "axios";
+import { redis } from "../db/Redis";
+import { Link } from "../entity/Link";
 import { shuffle } from "./Shuffle";
 
 /**
@@ -16,6 +17,27 @@ export class LinkHelper {
     }
 
     /**
+     * Returns source url, if exists, and increment it counter
+     * @param id Link id
+     */
+    public static async open(id: string): Promise<string|void> {
+        const link = await this.find(id);
+
+        if (! link) {
+            return;
+        }
+
+        if (0 > link.amountOpen) {
+            throw new Error("Link is not verified");
+        }
+
+        // Registration on background
+        this.registerOpen(link);
+
+        return link.sourceLink;
+    }
+
+    /**
      * Create and store new short link
      * @param sourceLink Source url link
      * @param name Personal name for short link
@@ -28,10 +50,18 @@ export class LinkHelper {
         link.id = id;
         link.createdAt = new Date();
         link.sourceLink = sourceLink;
-        link.amountOpen = 0;
+        // Lock link for opening
+        link.amountOpen = -1;
 
         // Exception when parallel access or record already exists
-        await getRepository(Link).insert(link);
+        try {
+            await getRepository(Link).insert(link);
+        } catch (e) {
+            throw new Error("Link already exists");
+        }
+
+        // Start check on background
+        this.checkLink(link);
 
         return link;
     }
@@ -66,6 +96,27 @@ export class LinkHelper {
         await getRepository(Link).delete({
             createdAt: LessThan(timeLimit),
         });
+    }
+
+    /**
+     * Checking that url is available
+     * @param link Link
+     */
+    private static async checkLink(link: Link): Promise<boolean> {
+        const response = await axios.get(link.sourceLink);
+
+        if (200 !== response.status) {
+            await getRepository(Link).delete(link);
+
+            return false;
+        }
+
+        // Now link is available for opening
+        link.amountOpen = 0;
+
+        await getRepository(Link).save(link);
+
+        return true;
     }
 
     /**

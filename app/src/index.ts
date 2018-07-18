@@ -1,19 +1,16 @@
 import { createConnection, getRepository } from "typeorm";
-import { Link } from "./entity/Link";
-import { LinkHelper } from "./helpers/LinkHelper";
+import { app } from "./app";
+import * as errorHandler from "errorhandler";
 
-// TODO: connection settings are in the "ormconfig.json" file!!!
 createConnection().then(async (connection) => {
-    const repo = getRepository(Link);
+    console.log("Connected!");
 
-    const link = await LinkHelper.createLink("http://localhost/");
-    await LinkHelper.registerOpen(link);
+    // TODO: fix it
+    console.warn("Connection settings are in the 'ormconfig.json' file!");
+});
 
-    const list = await repo.find();
+app.use(errorHandler());
 
-    console.log(list);
-
-    await LinkHelper.flushOpens();
-
-    await LinkHelper.cleanByTTL(15);
+export const server = app.listen(app.get("port"), () => {
+    console.log("Server started!");
 });
