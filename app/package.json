@@ -41,6 +41,7 @@
     "express-validator": "^5.2.0",
     "ioredis": "^3.2.2",
     "mysql2": "^1.5.3",
+    "pug": "^2.0.3",
     "reflect-metadata": "^0.1.12",
     "typeorm": "^0.2.7"
   },

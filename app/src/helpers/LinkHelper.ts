@@ -105,6 +105,8 @@ export class LinkHelper {
     private static async checkLink(link: Link): Promise<boolean> {
         const response = await axios.get(link.sourceLink);
 
+        // TODO: read http status only!
+
         if (200 !== response.status) {
             await getRepository(Link).delete(link);
 

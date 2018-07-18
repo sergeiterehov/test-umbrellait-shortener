@@ -8,7 +8,8 @@ import apiVersion1 from "./routers/api-v1";
 export const app = express();
 
 app.set("port", process.env.PORT || 3000);
-app.set("views", path);
+app.set("views", path.join(__dirname, "../views").normalize());
+app.set("view engine", "pug");
 
 app.use(json());
 app.use(urlencoded({
@@ -23,7 +24,7 @@ app.use("/api/v1", apiVersion1);
 // Frontend
 
 app.get("/", async (req, res) => {
-    res.send("Hello, world!");
+    res.render("index.pug");
 });
 
 // Links
