@@ -39,6 +39,7 @@ services:
       APP_PORT: 80
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      LINKS_GENERATE_METHOD: random
 
   web:
     image: nginx

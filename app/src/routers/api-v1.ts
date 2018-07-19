@@ -12,7 +12,7 @@ const api = express.Router();
 api.post("/short/create", [
     body("url")
         .custom(async (url) => {
-            if (/^http(s)?:\/\//.test(name)) {
+            if (! /^http(s)?:\/\//.test(url)) {
                 throw new Error("Not HTTP is used");
             }
         })

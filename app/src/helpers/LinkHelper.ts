@@ -1,8 +1,9 @@
-import { getRepository, getConnection, Raw, LessThan, Not } from "typeorm";
+import { getRepository, getConnection, LessThan, Not } from "typeorm";
 import axios from "axios";
 import { redis } from "../db/Redis";
 import { Link } from "../entity/Link";
-import { shuffle } from "./Shuffle";
+import { shuffle, randomString } from "./linkGenerator";
+import { config } from "./config";
 
 /**
  * Helper for shortlink manipulations
@@ -43,7 +44,7 @@ export class LinkHelper {
      * @param name Personal name for short link
      */
     public static async createLink(sourceLink: string, name: string|null = null): Promise<Link> {
-        const id = name ? name : this.generateShuffleString(await this.generateNextId());
+        const id = name ? name : await this.generateIdString();
 
         const link = new Link();
 
@@ -152,11 +153,18 @@ export class LinkHelper {
     }
 
     /**
-     * Generate the string by bit shuffle operation on the received number
+     * Generate the string for using as id
      * @param currentNumber Current state of auto increment
      */
-    private static generateShuffleString(currentNumber: number): string {
-        return shuffle(currentNumber).toString(36);
+    private static async generateIdString(): Promise<string> {
+        switch (config.links.generateMethod) {
+            // Absolutely unique numbers, up to ~ 10^15
+            case "shuffle": return shuffle(await this.generateNextId()).toString(36);
+            // Pseudo random strings, up to ~ 3 * 10^14
+            case "random": return randomString(8);
+        }
+
+        throw new Error("Service not available");
     }
 
     /**
