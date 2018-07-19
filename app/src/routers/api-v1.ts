@@ -21,11 +21,15 @@ api.post("/short/create", [
         }).withMessage("Use 3-32 chars long")
         .custom(async (value) => {
             if (/[^a-zA-Z0-9_\-]/.test(value)) {
-                throw new Error("Used forbidden char");
+                throw new Error("Forbidden char used");
+            }
+
+            if (/^http(s)?:\/\//.test(value)) {
+                throw new Error("Not HTTP is used");
             }
 
             if (-1 !== protectedNames.indexOf(value)) {
-                throw new Error("Used protected name");
+                throw new Error("Protected name used");
             }
         }),
 ], StopValidationError, ShortController.postCreate);
