@@ -1,4 +1,4 @@
-import { ApiResultShortMostPopular } from './types/api.d';
+import { ApiResultShortMostPopular } from "./types/api.d";
 import { ErrorData } from "./errors/ErrorData";
 import { ApiResultShortCreate } from "./types/api";
 
@@ -27,7 +27,7 @@ export class API {
 
         switch (response.status) {
             case 400: throw new ErrorData((await response.json()).errors);
-            case 500: throw new Error("Server error");
+            case 500: throw new Error("Server error: " + await response.text());
             case 200: return await response.json();
         }
 

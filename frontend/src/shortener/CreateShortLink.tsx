@@ -15,9 +15,13 @@ interface IStateCreateShortLink {
      */
     personalName: string;
     /**
-     * Enable state of functional
+     * Enabled functional
      */
-    shortButtonEnabled: boolean;
+    shortEnabled: boolean;
+    /**
+     * Enabled personal name using
+     */
+    personalNameEnabled: boolean;
     /**
      * Message in the short preview label
      */
@@ -38,7 +42,8 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
         this.state = {
             sourceUrl: "",
             personalName: "",
-            shortButtonEnabled: true,
+            shortEnabled: true,
+            personalNameEnabled: false,
             shortLabel: undefined,
             error: undefined,
         };
@@ -53,15 +58,16 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
                     id="source-link-input"
                     value={this.state.sourceUrl}
                     onChange={this.handlerSourceLinkChange}
-                    disabled={! this.state.shortButtonEnabled}
+                    disabled={! this.state.shortEnabled}
                     placeholder="Enter your long link here..." />
-                <small>{ this.state.error }</small>
             </div>
+
+            { this.renderPersonalNameInput() }
 
             <div className="mb-3">
                 <button className="btn btn-success"
                     onClick={this.handlerShortButtonClick}
-                    disabled={! this.state.shortButtonEnabled}>Short it!</button>
+                    disabled={! this.state.shortEnabled}>Short it!</button>
 
                 { this.renderShortLink() }
             </div>
@@ -69,9 +75,15 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
     }
 
     /**
-     * View for result: short link
+     * View for result: short link or error
      */
     private renderShortLink() {
+        if (this.state.error) {
+            return <span className="pl-3 text-danger">
+                { this.state.error }
+            </span>;
+        }
+
         if (! this.state.shortLabel) {
             return;
         }
@@ -81,6 +93,25 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
         </span>;
     }
 
+    private renderPersonalNameInput() {
+        if (! this.state.personalNameEnabled) {
+            return <div className="mb-3">
+                <a href="#" onClick={this.handlerNameEnableClick}>Use personal name</a>
+            </div>;
+        }
+
+        return <div className="mb-3">
+            <label htmlFor="source-link-input">Personal name</label>
+            <input type="text"
+                className="form-control"
+                id="source-link-input"
+                value={this.state.personalName}
+                onChange={this.handlerPersonalNameChange}
+                disabled={! this.state.shortEnabled}
+                placeholder="If not required, leave empty" />
+        </div>;
+    }
+
     /**
      * On click button create short link
      */
@@ -88,17 +119,18 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
         e.preventDefault();
 
         this.setState({
-            shortButtonEnabled: false,
+            shortEnabled: false,
             error: undefined,
             shortLabel: undefined,
         });
 
         const url = this.state.sourceUrl;
+        const name = this.state.personalName;
 
         try {
             validateUrl(url);
 
-            const short = await this.createShortLink(url);
+            const short = await this.createShortLink(url, name ? name : undefined);
 
             this.setState({
                 shortLabel: buildShortUrl(short),
@@ -112,7 +144,7 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
         }
 
         this.setState({
-            shortButtonEnabled: true,
+            shortEnabled: true,
         });
     }
 
@@ -128,14 +160,36 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
     }
 
     /**
+     * On change personal name
+     */
+    private handlerPersonalNameChange = async (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({
+            personalName: e.currentTarget.value,
+            error: undefined,
+            shortLabel: undefined,
+        });
+    }
+
+    /**
+     * On click use personal name
+     */
+    private handlerNameEnableClick = async (e: React.FormEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+
+        this.setState({
+            personalNameEnabled: true,
+        });
+    }
+
+    /**
      * Create short link request
      * @param url Source URL
      */
-    private async createShortLink(url: string) {
+    private async createShortLink(url: string, name?: string) {
         let result: ApiResultShortCreate;
 
         try {
-            result = await api.shortCreate(url);
+            result = await api.shortCreate(url, name);
         } catch (e) {
             if (e instanceof ErrorData) {
                 throw new Error(e.errors.map((item) => item.msg).join("; "));
