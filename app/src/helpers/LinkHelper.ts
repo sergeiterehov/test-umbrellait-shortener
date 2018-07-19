@@ -1,4 +1,4 @@
-import { getRepository, getConnection, Raw, LessThan } from "typeorm";
+import { getRepository, getConnection, Raw, LessThan, Not } from "typeorm";
 import axios from "axios";
 import { redis } from "../db/Redis";
 import { Link } from "../entity/Link";
@@ -95,6 +95,22 @@ export class LinkHelper {
 
         await getRepository(Link).delete({
             createdAt: LessThan(timeLimit),
+        });
+    }
+
+    /**
+     * Returns most popular links
+     * @param limit Max number of Links
+     */
+    public static async getMostPopular(limit: number = 30): Promise<Link[]> {
+        return await getRepository(Link).find({
+            where: {
+                amountOpen: Not(-1),
+            },
+            order: {
+                amountOpen: "DESC",
+            },
+            take: limit,
         });
     }
 

@@ -34,4 +34,6 @@ api.post("/short/create", [
         }),
 ], StopValidationError, ShortController.postCreate);
 
+api.get("/short/most-popular", ShortController.getTop);
+
 export default api;
