@@ -39,6 +39,7 @@ export class ShortController {
         const data = links.map((link) => ({
             link: link.id,
             views: link.amountOpen,
+            preview: link.sourceLink.substr(0, 30) + "...",
         }));
 
         return res.send(data);
