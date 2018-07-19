@@ -11,6 +11,11 @@ const api = express.Router();
 
 api.post("/short/create", [
     body("url")
+        .custom(async (url) => {
+            if (/^http(s)?:\/\//.test(name)) {
+                throw new Error("Not HTTP is used");
+            }
+        })
         .isURL().withMessage("Use valid URL address")
         .isLength({min: 7, max: 1024}).withMessage("Length is incorrect"),
     body("name")
@@ -22,10 +27,6 @@ api.post("/short/create", [
         .custom(async (value) => {
             if (/[^a-zA-Z0-9_\-]/.test(value)) {
                 throw new Error("Forbidden char used");
-            }
-
-            if (/^http(s)?:\/\//.test(value)) {
-                throw new Error("Not HTTP is used");
             }
 
             if (-1 !== protectedNames.indexOf(value)) {
