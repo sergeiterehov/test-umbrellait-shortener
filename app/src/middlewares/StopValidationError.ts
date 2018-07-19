@@ -11,7 +11,7 @@ export async function StopValidationError(req: Request, res: Response, next: Nex
     const errors = validationResult(req);
 
     if (! errors.isEmpty()) {
-        return res.status(403).send({
+        return res.status(400).send({
             errors: errors.array(),
         });
     }
