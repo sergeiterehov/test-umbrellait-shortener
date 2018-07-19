@@ -2,6 +2,9 @@ import * as React from "react";
 import { TopLinks } from "./TopLinks";
 import { CreateShortLink } from "./CreateShortLink";
 
+/**
+ * Main shortener client application
+ */
 export class AppShortener extends React.Component {
     public render() {
         return <div className="row">

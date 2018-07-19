@@ -17,6 +17,6 @@ module.exports = {
   },
   output: {
     filename: 'shortener.js',
-    path: path.resolve(__dirname, 'public/js')
+    path: path.resolve(__dirname, 'public/js'),
   }
 };
