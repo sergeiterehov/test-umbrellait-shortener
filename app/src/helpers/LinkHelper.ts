@@ -4,6 +4,7 @@ import { Link } from "../entity/Link";
 import { shuffle, randomString } from "./linkGenerator";
 import { config } from "./config";
 import { HttpHelper } from "./HttpHelper";
+import { log } from "./Log";
 
 /**
  * Helper for shortlink manipulations
@@ -64,6 +65,8 @@ export class LinkHelper {
         // Start check on background
         this.checkLink(link);
 
+        log.link.info(`Created link ${link.id} to ${link.sourceLink}`);
+
         return link;
     }
 
@@ -83,6 +86,8 @@ export class LinkHelper {
         const updating = items.map(async (pair) => this.updateAmountOpen(pair[0], pair[1]));
 
         await Promise.all(updating);
+
+        log.link.info(`Flushed ${updating.length} links`);
     }
 
     /**
@@ -94,9 +99,11 @@ export class LinkHelper {
 
         timeLimit.setDate(timeLimit.getDate() - ttlDays);
 
-        await getRepository(Link).delete({
+        const result = await getRepository(Link).delete({
             createdAt: LessThan(timeLimit),
         });
+
+        log.link.info(["Deleted by TTL", result]);
     }
 
     /**
@@ -132,6 +139,8 @@ export class LinkHelper {
             // Remove the link if unavailable
             await getRepository(Link).delete(link);
 
+            log.link.info(`Rejected ${link.id}`);
+
             return false;
         }
 
@@ -139,6 +148,8 @@ export class LinkHelper {
         link.amountOpen = 0;
 
         await getRepository(Link).save(link);
+
+        log.link.info(`Accepted ${link.id}`);
 
         return true;
     }
