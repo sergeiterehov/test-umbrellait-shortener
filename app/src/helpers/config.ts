@@ -8,6 +8,16 @@ export interface IConfig {
         port: number,
     };
     /**
+     * Mysql default connection
+     */
+    mysql: {
+        host: string,
+        port: number,
+        username: string,
+        password: string,
+        database: string,
+    };
+    /**
      * Redis config
      */
     redis: {
@@ -31,11 +41,18 @@ export interface IConfig {
 
 export const config: IConfig = {
     app: {
-        port: env.APP_PORT ? parseInt(env.APP_PORT, 10) : 3000,
+        port: env.APP_PORT ? parseInt(env.APP_PORT, 10) : 80,
+    },
+    mysql: {
+        host: env.MYSQL_HOST || "localhost",
+        port: env.MYSQL_PORT ? parseInt(env.REDIS_PORT, 10) : 3306,
+        username: env.MYSQL_USER,
+        password: env.MYSQL_PASSWORD,
+        database: env.MYSQL_DB,
     },
     redis: {
         host: env.REDIS_HOST || "localhost",
-        port: env.REDIS_PORT ? parseInt(env.REDIS_PORT, 10) : 63790,
+        port: env.REDIS_PORT ? parseInt(env.REDIS_PORT, 10) : 6379,
     },
     links: {
         generateMethod: env.LINKS_GENERATE_METHOD || "shuffle",
