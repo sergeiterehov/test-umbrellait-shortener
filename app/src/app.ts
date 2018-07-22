@@ -6,6 +6,9 @@ import { LinkController } from "./controllers/LinkController";
 import apiVersion1 from "./routers/api-v1";
 import { config } from "./helpers/config";
 
+/**
+ * Public application
+ */
 export const app = express();
 
 app.set("port", config.app.port);

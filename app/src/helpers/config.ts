@@ -22,18 +22,23 @@ export interface IConfig {
          * Link id generation method
          */
         generateMethod: string,
+        /**
+         * Time to live in days
+         */
+        ttl: number,
     };
 }
 
 export const config: IConfig = {
     app: {
-        port: parseInt(env.APP_PORT, 10) || 3000,
+        port: env.APP_PORT ? parseInt(env.APP_PORT, 10) : 3000,
     },
     redis: {
         host: env.REDIS_HOST || "localhost",
-        port: parseInt(env.REDIS_PORT, 10) || 63790,
+        port: env.REDIS_PORT ? parseInt(env.REDIS_PORT, 10) : 63790,
     },
     links: {
         generateMethod: env.LINKS_GENERATE_METHOD || "shuffle",
+        ttl: env.LINKS_TTL ? parseInt(env.LINKS_TTL, 10) : 15,
     },
 };
