@@ -71,6 +71,12 @@ export class CreateShortLink extends React.Component<{}, IStateCreateShortLink> 
 
                 { this.renderShortLink() }
             </div>
+
+            <div className="mb-3">
+                <small className="text-muted">
+                    * If the address is unavailable by HTTP protocol, your link will be deleted after checking
+                </small>
+            </div>
         </div>;
     }
 

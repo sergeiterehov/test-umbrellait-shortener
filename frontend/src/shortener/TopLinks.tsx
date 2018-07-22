@@ -46,6 +46,12 @@ export class TopLinks extends React.Component<{}, IStateTopLinks> {
 
         return <div>
             { this.renderList() }
+
+            <div className="mb-3">
+                <small className="text-muted">
+                    * Updating every minute
+                </small>
+            </div>
         </div>;
     }
 
