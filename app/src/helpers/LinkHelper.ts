@@ -1,9 +1,9 @@
 import { getRepository, getConnection, LessThan, Not } from "typeorm";
-import axios from "axios";
 import { redis } from "../db/Redis";
 import { Link } from "../entity/Link";
 import { shuffle, randomString } from "./linkGenerator";
 import { config } from "./config";
+import { HttpHelper } from "./HttpHelper";
 
 /**
  * Helper for shortlink manipulations
@@ -120,11 +120,16 @@ export class LinkHelper {
      * @param link Link
      */
     private static async checkLink(link: Link): Promise<boolean> {
-        const response = await axios.get(link.sourceLink);
+        let available: boolean;
 
-        // TODO: read http status only!
+        try {
+            available = await HttpHelper.checkAvailable(link.sourceLink);
+        } catch (e) {
+            available = false;
+        }
 
-        if (200 !== response.status) {
+        if (! available) {
+            // Remove the link if unavailable
             await getRepository(Link).delete(link);
 
             return false;
