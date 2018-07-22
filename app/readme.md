@@ -9,5 +9,9 @@ npm run build
 ```
 
 ```bash
+npm run migrate-up
+```
+
+```bash
 npm start
 ```
